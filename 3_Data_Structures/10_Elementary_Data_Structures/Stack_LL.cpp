@@ -29,6 +29,10 @@ class Stack_LL{
 			len = 0;
 		}
 
+		~Stack_LL(){
+			free(top);
+		}
+		
 		int is_empty(){
 			return (top == NULL);
 		}

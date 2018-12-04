@@ -16,6 +16,10 @@ class Stack{
 			size = s;
 		}
 
+		~Stack(){
+			free(data);
+		}
+
 		int is_empty(){
 			return (top == -1);
 		}

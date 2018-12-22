@@ -96,7 +96,24 @@ class BST{
 
             return current;
         }
+
+        Node *maximum(Node *current = NULL){
+            if( current == NULL ) current = root;
+
+            while( current != NULL and current->right != NULL ) current = current->right;
+
+            return current;
+        }
+
+        Node *minimum(Node *current = NULL){
+            if( current == NULL ) current = root;
+
+            while( current != NULL and current->left != NULL ) current = current->left;
+
+            return current;
+        }
 };
+
 
 int main(){
 
@@ -119,6 +136,9 @@ int main(){
         cout <<"\n\n" <<search <<" not found in tree";
     else
         cout <<"\n\n" <<search <<" found in tree";
+
+    cout<<"\n\nMax node = " <<a.maximum()->value;
+    cout<<"\nMin node = " <<a.minimum()->value;
 
     cout<<endl;
     return 0;

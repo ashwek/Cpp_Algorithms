@@ -87,6 +87,15 @@ class BST{
                 cout<<current->value <<", ";
             }
         }
+
+        Node *search(int find){
+            Node *current = root;
+
+            while( current != NULL and current->value != find )
+                current = (current->value < find) ? current->right : current->left;
+
+            return current;
+        }
 };
 
 int main(){
@@ -95,7 +104,7 @@ int main(){
     BST a;
 
     for(int i=0; i<10; i++)
-        a.insert(int_values[i]);
+        a.insert(ins_values[i]);
 
     cout<<"BST  Preorder: ";
     a.preorder();
@@ -103,6 +112,13 @@ int main(){
     a.inorder();
     cout<<"\nBST Postorder: ";
     a.postorder();
+
+    int search = 33;
+    Node *srh = a.search(search);
+    if( ! srh )
+        cout <<"\n\n" <<search <<" not found in tree";
+    else
+        cout <<"\n\n" <<search <<" found in tree";
 
     cout<<endl;
     return 0;

@@ -54,12 +54,55 @@ class BST{
                     parent->right = new Node(parent, val);
             }
         }
+
+        void preorder(Node *current = NULL){
+            if( current == NULL ) current = root;
+
+            // Pre-Order = (Root, Left, Right)
+            if(current != NULL){
+                cout<<current->value <<", ";
+                if( current->left != NULL ) preorder(current->left);
+                if( current->right != NULL ) preorder(current->right);
+            }
+        }
+
+        void inorder(Node *current = NULL){
+            if( current == NULL ) current = root;
+
+            // In-Order = (Left, Root, Right)
+            if( current != NULL ){
+                if( current->left != NULL ) inorder(current->left);
+                cout<<current->value <<", ";
+                if( current->right != NULL ) inorder(current->right);
+            }
+        }
+
+        void postorder(Node *current = NULL){
+            if( current == NULL ) current = root;
+
+            // Post-Order = (Left, Right, Root)
+            if( current != NULL ){
+                if( current->left != NULL ) postorder(current->left);
+                if( current->right != NULL ) postorder(current->right);
+                cout<<current->value <<", ";
+            }
+        }
 };
 
 int main(){
 
+    int ins_values[] = {28, 33, 21, 37, 21, 47, 40, 22, 1, 16};
     BST a;
-    a.insert(28);
+
+    for(int i=0; i<10; i++)
+        a.insert(int_values[i]);
+
+    cout<<"BST  Preorder: ";
+    a.preorder();
+    cout<<"\nBST   Inorder: ";
+    a.inorder();
+    cout<<"\nBST Postorder: ";
+    a.postorder();
 
     cout<<endl;
     return 0;

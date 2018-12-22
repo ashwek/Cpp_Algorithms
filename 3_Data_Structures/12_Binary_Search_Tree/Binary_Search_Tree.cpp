@@ -112,8 +112,29 @@ class BST{
 
             return current;
         }
-};
 
+        Node *successor(Node *current){
+
+            if( current->right == NULL ){
+                while( current->parent != NULL and current->parent->right == NULL )
+                    current = current->parent;
+                return current->parent;
+            }
+            else
+                return minimum(current->right);
+        }
+
+        Node *predecessor(Node *current){
+
+            if( current->left == NULL ){
+                while( current->parent != NULL and current->parent->left == NULL )
+                    current = current->parent;
+                return current->parent;
+            }
+            else
+                return maximum(current->left);
+        }
+};
 
 int main(){
 
@@ -139,6 +160,9 @@ int main(){
 
     cout<<"\n\nMax node = " <<a.maximum()->value;
     cout<<"\nMin node = " <<a.minimum()->value;
+
+    cout<<"\n\nSuccessor of 21 = " <<a.successor(a.search(21))->value;
+    cout<<"\nPredecessor of 21 = " <<a.predecessor(a.search(21))->value;
 
     cout<<endl;
     return 0;

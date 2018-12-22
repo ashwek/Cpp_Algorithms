@@ -12,6 +12,7 @@ https://en.wikipedia.org/wiki/Binary_search_tree
 */
 
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -88,6 +89,28 @@ class BST{
             }
         }
 
+        void levelorder(Node *current = NULL){
+
+            vector<Node*> next_level;
+
+            if( current == NULL and root != NULL ){
+                next_level.push_back(root);
+            }
+
+            while( next_level.size() > 0 ){
+                cout <<next_level[0]->value <<", ";
+
+                if( next_level[0]->left != NULL ){
+                    next_level.push_back(next_level[0]->left);
+                }
+                if( next_level[0]->right != NULL ){
+                    next_level.push_back(next_level[0]->right);
+                }
+
+                next_level.erase(next_level.begin());
+            }
+        }
+
         Node *search(int find){
             Node *current = root;
 
@@ -115,8 +138,10 @@ class BST{
 
         Node *successor(Node *current){
 
+            if( current == NULL ) return NULL;
+
             if( current->right == NULL ){
-                while( current->parent != NULL and current->parent->right == NULL )
+                while( current->parent != NULL and current->parent->right == current )
                     current = current->parent;
                 return current->parent;
             }
@@ -126,8 +151,10 @@ class BST{
 
         Node *predecessor(Node *current){
 
+            if( current == NULL ) return NULL;
+
             if( current->left == NULL ){
-                while( current->parent != NULL and current->parent->left == NULL )
+                while( current->parent != NULL and current->parent->left == current )
                     current = current->parent;
                 return current->parent;
             }
@@ -144,12 +171,14 @@ int main(){
     for(int i=0; i<10; i++)
         a.insert(ins_values[i]);
 
-    cout<<"BST  Preorder: ";
+    cout<<"  BST Preorder: ";
     a.preorder();
-    cout<<"\nBST   Inorder: ";
+    cout<<"\n   BST Inorder: ";
     a.inorder();
-    cout<<"\nBST Postorder: ";
+    cout<<"\n BST Postorder: ";
     a.postorder();
+    cout<<"\nBST Levelorder: ";
+    a.levelorder();
 
     int search = 33;
     Node *srh = a.search(search);
@@ -161,8 +190,10 @@ int main(){
     cout<<"\n\nMax node = " <<a.maximum()->value;
     cout<<"\nMin node = " <<a.minimum()->value;
 
-    cout<<"\n\nSuccessor of 21 = " <<a.successor(a.search(21))->value;
-    cout<<"\nPredecessor of 21 = " <<a.predecessor(a.search(21))->value;
+    Node *temp = a.successor(a.search(22));
+    if( temp != NULL ) cout<<"\n\nSuccessor of 47 = " <<temp->value;
+    temp = a.predecessor(a.search(22));
+    if( temp != NULL ) cout<<"\nPredecessor of 47 = " <<temp->value;
 
     cout<<endl;
     return 0;

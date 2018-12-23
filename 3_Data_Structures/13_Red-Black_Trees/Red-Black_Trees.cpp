@@ -30,7 +30,41 @@ class Node{
         }
 };
 
+class RBT{
+
+    public:
+        Node *nill = new Node(NULL, 0, NULL, NULL, 0);    // NULL Node
+        Node *root = NULL;
+
+        RBT(){
+            root = NULL;
+        }
+
+        void insert(int value){
+            if( root == NULL ) root = new Node(nill, value, nill, nill, 0);
+            else{
+                Node *temp_parent = root, *temp = root;
+                while( temp != nill ){
+                    temp_parent = temp;
+                    temp = ( value <= temp->value ) ? temp->left : temp->right;
+                }
+
+                Node *new_node = new Node(temp_parent, value, nill, nill);
+                if( value <= temp_parent->value ) temp_parent->left = new_node;
+                else temp_parent->right = new_node;
+
+                //Call fixup method
+            }
+        }
+};
+
 int main(){
+
+    int ins_values[] ={33, 65, 50, 55, 42, 31, 15, 65, 22, 87};
+    RBT a;
+
+    for(int i=0; i<10; i++)
+        a.insert(ins_values[i]);
 
     cout<<endl;
     return 0;

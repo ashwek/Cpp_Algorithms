@@ -40,6 +40,7 @@ void graph::print_adj(){
 void graph::bfs(int src){
 
     vector<int> queue;
+    int front = 0;
 
     for( int i = 0; i < v; i++){
         distance[i] = parent[i] = -1;
@@ -50,9 +51,8 @@ void graph::bfs(int src){
     distance[src] = 0;
     queue.push_back(src);
 
-    while( queue.size() != 0 ){
-        int temp = queue.front();
-        queue.erase(queue.begin(), queue.begin()+1);
+    while( front < queue.size() ){
+        int temp = queue[front++];
         cout<<temp <<" -> ";
         for( int i = 0; i < adj[temp].size(); i++){
             if( state[adj[temp][i]] == 0 ){

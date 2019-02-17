@@ -9,10 +9,11 @@ public:
     vector<vector<int>> adj;
     vector<int> distance;
     vector<int> parent;
-    vector<int> color;
+    vector<int> state;
     graph(int nodes);
     void add_edge(int src, int dst);
     void print_adj();
+    void bfs(int src);
 };
 
 graph::graph(int nodes = 0){
@@ -20,7 +21,7 @@ graph::graph(int nodes = 0){
     adj.resize(nodes);
     distance.resize(nodes);
     parent.resize(nodes);
-    color.resize(nodes);
+    state.resize(nodes);
 }
 
 void graph::add_edge(int src, int dst){
@@ -34,6 +35,35 @@ void graph::print_adj(){
             cout<<adj[i][j] <<", ";
         cout<<endl;
     }
+}
+
+void graph::bfs(int src){
+
+    vector<int> queue;
+
+    for( int i = 0; i < v; i++){
+        distance[i] = parent[i] = -1;
+        state[i] = 0;
+    }
+
+    state[src] = 1;
+    distance[src] = 0;
+    queue.push_back(src);
+
+    while( queue.size() != 0 ){
+        int temp = queue.front();
+        queue.erase(queue.begin(), queue.begin()+1);
+        cout<<temp <<" -> ";
+        for( int i = 0; i < adj[temp].size(); i++){
+            if( state[adj[temp][i]] == 0 ){
+                state[adj[temp][i]] = 1;
+                queue.push_back(adj[temp][i]);
+                distance[adj[temp][i]] = distance[temp]+1;
+                parent[adj[temp][i]] = temp;
+            }
+        }
+    }
+
 }
 
 int main(){
@@ -63,7 +93,8 @@ int main(){
 
     g.print_adj();
 
-
+    cout<<"\nBFS traversal : ";
+    g.bfs(1);
 
     cout<<endl;
     return 0;

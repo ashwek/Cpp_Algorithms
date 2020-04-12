@@ -1,28 +1,56 @@
-#include<iostream>
+#include <iostream>
+#include <stdlib.h>
+
 using namespace std;
 
-void Insertion_Sort(int Arr[], int N){
+void insertion_sort(int arr[], int n){
 
-	int Key, j;
-	for(int i=1; i<N; i++){
-		Key = Arr[i];
-		j = i-1;
-		while(j>=0 and Arr[j] > Key){
-			Arr[j+1] = Arr[j];
-			j--;
-		}
-		Arr[j+1] = Key;
-	}
+    int key, j;
+    for(int i = 1; i < n; i++){
+
+        key = arr[i];
+        j = i - 1;
+        while( j >= 0 && arr[j] > key ){
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
+
+    }
+
 }
 
 int main(){
 
-	int Arr[] = {13,-3,-25,20,-3,-16,-23,18,20,-7,12,-5,-22,15,-4,7}, N = 16;
+    // seed random
+    srand(time(NULL));
 
-	Insertion_Sort(Arr, N);
-	cout<<"\nArray = ";
-	for(int i=0; i<N; i++) cout<<Arr[i] <<", ";
+    // get random size (bettwen 1000 & 1009)
+    int n = random() % 10 + 1000;
+    int arr[n];
 
-	cout<<endl;
-	return 0;
+    // initialize random array
+    cout <<"Size = " <<n <<"\n\nOrignal Array : ";
+    for(int i = 0; i < n; i++){
+        arr[i] = random() % 1000;
+        cout <<arr[i] <<", ";
+    }
+
+    clock_t start, end;
+    start = clock();
+
+    insertion_sort(arr, n);
+
+    end = clock();
+
+    cout<<"\n\nSorted Array = ";
+    for(int i = 0; i < n; i++)
+        cout <<arr[i] <<", ";
+
+    cout <<"\n\nSorted " <<n <<" elements in "
+        <<((float)(end - start)) / CLOCKS_PER_SEC <<" seconds";
+
+    cout<<endl;
+    return 0;
+
 }

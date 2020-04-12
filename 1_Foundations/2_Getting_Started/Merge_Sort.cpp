@@ -1,45 +1,85 @@
-#include<iostream>
+#include <iostream>
+#include <stdlib.h>
+
 using namespace std;
 
-void Assign(int Src[], int s, int e, int Dst[]){
-	for(int i=s; i<e; i++) Dst[i-s] = Src[i];
+void assign(int src[], int s, int e, int dst[]) {
+    for(int i = s; i < e; i++)
+        dst[i - s] = src[i];
 }
 
-void Merge(int Arr[], int s, int m, int e){
-	
-	int L = m-s+1, R = e-m+1;
-	
-	int *Left = new int[L];
-	Assign(Arr, s, m, Left);
-	
-	int *Right = new int[R];
-	Assign(Arr, m, e, Right);
-	
-	Left[L-1] = Right[R-1] = (Left[L-2]>Right[R-2]) ? Left[L-2]+1 : Right[R-2]+1 ;
-	
-	L = R = 0;
-	for(int i=s; i<e; i++){
-		if(Left[L] < Right[R]) Arr[i] = Left[L++];
-		else Arr[i] = Right[R++];
-	}
+int max(int a, int b){
+    return (a > b) ? a : b;
 }
 
-void Merge_Sort(int Arr[], int s, int e){
-	
-	if(e-s > 1){
-		int m = (e+s)/2;
-		Merge_Sort(Arr, s, m);
-		Merge_Sort(Arr, m, e);
-		Merge(Arr, s, m, e);
-	}
+void merge(int arr[], int s, int m, int e) {
+
+    int leftSize = m - s + 1;
+    int rightSize = e - m + 1;
+
+    int *leftArr = new int[leftSize];
+    assign(arr, s, m, leftArr);
+
+    int *rightArr = new int[rightSize];
+    assign(arr, m, e, rightArr);
+
+    leftArr[leftSize - 1] = rightArr[rightSize - 1] =
+                    max(leftArr[leftSize - 2], rightArr[rightSize - 2]) + 1;
+
+    leftSize = rightSize = 0;
+    for(int i = s; i < e; i++) {
+
+        if( leftArr[leftSize] < rightArr[rightSize] )
+            arr[i] = leftArr[leftSize++];
+        else
+            arr[i] = rightArr[rightSize++];
+
+    }
+
+}
+
+void merge_sort(int arr[], int s, int e){
+
+    if( e - s > 1 ) {
+        int m = (e + s) / 2;
+        merge_sort(arr, s, m);
+        merge_sort(arr, m, e);
+        merge(arr, s, m, e);
+    }
+
 }
 
 int main(){
 
-	int A[] = {13,-3,-25,20,-3,-16,-23,18,20,-7,12,-5,-22,15,-4,7}, N = 16;
-	Merge_Sort(A, 0, N);
-	cout<<"\nArray = ";
-	for(int i=0; i<N; i++) cout<<A[i] <<", ";
-	cout<<endl;
-	return 0;
+    // seed random generator
+    srandom(time(NULL));
+
+    // get random size (between 100 - 109)
+    int n = random() % 10 + 100;
+    int arr[n];
+
+    // initialize random array
+    cout <<"Size : " <<n <<"\n\nOrignal Array : ";
+    for(int i = 0; i < n; i++){
+        arr[i] = random() % 1000;
+        cout <<arr[i] <<", ";
+    }
+
+    clock_t start, end;
+    start = clock();
+
+    merge_sort(arr, 0, n);
+
+    end = clock();
+
+    cout<<"\n\nSorted Array : ";
+    for(int i = 0; i < n; i++)
+        cout<<arr[i] <<", ";
+
+    cout <<"\n\nSiorted " <<n <<" elements in "
+        <<((float)(end - start)) / CLOCKS_PER_SEC <<" second";
+
+    cout<<endl;
+    return 0;
+
 }

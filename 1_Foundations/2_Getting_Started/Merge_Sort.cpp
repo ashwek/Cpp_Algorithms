@@ -3,24 +3,22 @@
 
 using namespace std;
 
-void assign(int src[], int s, int e, int dst[]) {
+template<class T>
+void assign(T src[], int s, int e, T dst[]) {
     for(int i = s; i < e; i++)
         dst[i - s] = src[i];
 }
 
-int max(int a, int b){
-    return (a > b) ? a : b;
-}
-
-void merge(int arr[], int s, int m, int e) {
+template<class T>
+void merge(T arr[], int s, int m, int e) {
 
     int leftSize = m - s + 1;
     int rightSize = e - m + 1;
 
-    int *leftArr = new int[leftSize];
+    T *leftArr = new T[leftSize];
     assign(arr, s, m, leftArr);
 
-    int *rightArr = new int[rightSize];
+    T *rightArr = new T[rightSize];
     assign(arr, m, e, rightArr);
 
     leftArr[leftSize - 1] = rightArr[rightSize - 1] =
@@ -38,7 +36,8 @@ void merge(int arr[], int s, int m, int e) {
 
 }
 
-void merge_sort(int arr[], int s, int e){
+template<class T>
+void merge_sort(T arr[], int s, int e){
 
     if( e - s > 1 ) {
         int m = (e + s) / 2;
@@ -54,8 +53,8 @@ int main(){
     // seed random generator
     srandom(time(NULL));
 
-    // get random size (between 100 - 109)
-    int n = random() % 10 + 100;
+    // get random size (between 1 - 10000)
+    int n = random() % 10000 + 1;
     int arr[n];
 
     // initialize random array

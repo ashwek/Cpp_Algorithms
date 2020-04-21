@@ -1,54 +1,73 @@
 #include<iostream>
 using namespace std;
 
-int Max(int Arr[], int N){
-	int max = Arr[0];
-	for(int i=1; i<N; i++)
-		if(Arr[i] > max)
-			max = Arr[i];
-	return max;
+void max_min(int arr[], int n, int &max, int &min) {
+
+    max = arr[0];
+    min = arr[0];
+    for(int i = 1; i < n; i++){
+        if( arr[i] > max )
+            max = arr[i];
+        if( arr[i] < min )
+            min = arr[i];
+    }
+
 }
 
-int Min(int Arr[], int N){
-	int min = Arr[0];
-	for(int i=1; i<N; i++)
-		if(Arr[i] < min)
-			min = Arr[i];
-	return min;
-}
+int* counting_sort(int arr[], int n){
 
-void Print(int Arr[], int N){
-	for(int i=0; i<N; i++) cout<<Arr[i] <<", ";
-}
+    int max, min;
+    max_min(arr, n, max, min);
+    int *sorted_arr = new int[n];
 
-int *Counting_Sort(int Arr[], int N){
+    int *count = new int[max - min + 1];
 
-	int max = Max(Arr, N);
-	int min = Min(Arr, N);
-	int *Sorted_Arr = new int[N];
-	
-	int *Count = new int[max-min+1];
-	
-	for(int i=0; i<N; i++) Count[Arr[i]-min]++;
-	for(int i=1; i<(max-min+1); i++) Count[i]+=Count[i-1];
-	
-	for(int i=N-1; i>=0; i--){
-		Sorted_Arr[Count[Arr[i]-min]-1] = Arr[i];
-		Count[Arr[i]-min]--;
-	}
-	
-	return Sorted_Arr;
+    for(int i = 0; i < n; i++)
+        count[arr[i] - min]++;
+
+    for(int i = 1; i < (max - min + 1); i++)
+        count[i] += count[i - 1];
+
+    for(int i = n - 1; i >= 0; i--) {
+        sorted_arr[count[arr[i] - min] - 1] = arr[i];
+        count[arr[i] - min]--;
+    }
+
+    return sorted_arr;
+
 }
 
 int main(){
 
-	int Arr[] = {47, 65, 20, 66, 25, 53, 64, 69, 72, 22, 74, 25, 53, 15, 42, 36, 4, 69, 86, 19}, N = 20;
-	int *Sorted_Arr;
-	
-	cout<<"\n\tOrignal Array = ";Print(Arr, N);
-	Sorted_Arr = Counting_Sort(Arr, N);
-	cout<<"\n\t Sorted Array = ";Print(Sorted_Arr, N);
-	cout<<endl;
-	
-	return 0;
+    // seed random
+    srand(time(NULL));
+
+    // get random size (bettwen 1 & 10000)
+    int n = random() % 10000 + 1;
+    int arr[n];
+
+    // initialize random array
+    cout <<"Size = " <<n <<"\n\nOrignal Array : ";
+    for(int i = 0; i < n; i++){
+        arr[i] = random() % 1000;
+        cout <<arr[i] <<", ";
+    }
+
+    clock_t start, end;
+    start = clock();
+
+    int *sorted_arr = counting_sort(arr, n);
+
+    end = clock();
+
+    cout<<"\n\nSorted Array = ";
+    for(int i = 0; i < n; i++)
+        cout <<sorted_arr[i] <<", ";
+
+    cout <<"\n\nSorted " <<n <<" elements in "
+        <<((float)(end - start)) / CLOCKS_PER_SEC <<" seconds";
+
+    cout<<endl;
+    return 0;
+
 }

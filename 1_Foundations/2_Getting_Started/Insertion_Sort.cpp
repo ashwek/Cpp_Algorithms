@@ -3,9 +3,11 @@
 
 using namespace std;
 
-void insertion_sort(int arr[], int n){
+template<class T>
+void insertion_sort(T arr[], int n){
 
-    int key, j;
+    T key;
+    int j;
     for(int i = 1; i < n; i++){
 
         key = arr[i];
@@ -25,8 +27,8 @@ int main(){
     // seed random
     srand(time(NULL));
 
-    // get random size (bettwen 1000 & 1009)
-    int n = random() % 10 + 1000;
+    // get random size (bettwen 1 & 10000)
+    int n = random() % 10000 + 1;
     int arr[n];
 
     // initialize random array

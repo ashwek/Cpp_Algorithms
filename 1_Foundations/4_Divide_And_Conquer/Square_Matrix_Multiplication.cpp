@@ -3,7 +3,8 @@
 
 using namespace std;
 
-void multiply(int *a, int *b, int *c, int n){
+template<class T>
+void multiply(T *a, T *b, T *c, int n){
 
     for(int i = 0; i < n; i++){
         for(int j = 0; j < n; j++){
@@ -21,8 +22,8 @@ int main(){
     // seed random
     srand(time(NULL));
 
-    // get random size of matrix
-    int n = random() % 5 + 5;
+    // get random size of matrix (between 1 - 100)
+    int n = random() % 100 + 1;
     int mat1[n][n], mat2[n][n], mat3[n][n];
 
     // random initialize mat1

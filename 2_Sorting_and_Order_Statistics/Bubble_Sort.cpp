@@ -1,36 +1,65 @@
-#include<iostream>
+#include <iostream>
+#include <stdlib.h>
+
 using namespace std;
 
-void Bubble_Sort(int Arr[], int N){
+template<class T>
+void bubble_sort(T arr[], int n){
 
-	int temp;
-	bool Swap;
-	for(int i=0; i<N; i++){
-		Swap = false;
-		for(int j=0; j<(N-i-1); j++){
-			if(Arr[j] > Arr[j+1]){
-				temp = Arr[j];
-				Arr[j] = Arr[j+1];
-				Arr[j+1] = temp;
-				Swap = true;		//if swapping takes place, set swap to true
-			}
-		}
-		if(not Swap) break;		//If swapping was not performed, the array is sorted, break from the loop
-	}
-}
+    T temp;
+    bool swapped;
 
-void Print(int Arr[], int N){
-	cout<<"\n\tArray : ";
-	for(int i=0; i<N; i++) cout<<Arr[i] <<", ";
+    for(int i = 0; i < n; i++) {
+
+        swapped = false;
+        for(int j = 0; j < (n - i - 1); j++) {
+            if( arr[j] > arr[j + 1] ) {
+                temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j+1] = temp;
+
+                swapped = true;
+            }
+        }
+
+        if( ! swapped)
+            break;
+
+    }
+
 }
 
 int main(){
 
-	int Arr[] = {13,-3,-25,20,-3,-16,-23,18,20,-7,12,-5,-22,15,-4,7}, N=16;
-	Print(Arr, N);		//Print Orignal Array
-	Bubble_Sort(Arr, N);		//Bubble Sort
-	Print(Arr, N);		//Print Sorted Array
-	
-	cout<<endl;
-	return 0;
+    // seed random
+    srand(time(NULL));
+
+    // get random size (bettwen 1 & 10000)
+    int n = random() % 10000 + 1;
+    int arr[n];
+
+    // initialize random array
+    cout <<"Size = " <<n <<"\n\nOrignal Array : ";
+    for(int i = 0; i < n; i++){
+        arr[i] = random() % 1000;
+        cout <<arr[i] <<", ";
+    }
+
+    clock_t start, end;
+    start = clock();
+
+    bubble_sort(arr, n);
+
+    end = clock();
+
+    cout<<"\n\nSorted Array = ";
+    for(int i = 0; i < n; i++)
+        cout <<arr[i] <<", ";
+
+    cout <<"\n\nSorted " <<n <<" elements in "
+        <<((float)(end - start)) / CLOCKS_PER_SEC <<" seconds";
+
+    cout<<endl;
+    return 0;
+
 }

@@ -1,76 +1,94 @@
 #include <iostream>
+#include <stdlib.h>
 
 using namespace std;
 
+template<class DataType>
 class Queue{
+private:
+    DataType *data;
+    int frontPtr, rearPtr, size;
 
-	private:
-		int *data, f, r, size;
-	public:
-		Queue(int s = 10){
-			data = new int[s];
-			size = s;
-			f = r = 0;
-		}
+public:
 
-		~Queue(){
-			free(data);
-		}
+    Queue(int size = 10){
+        data = new DataType[size];
+        this->size = size;
+        frontPtr = rearPtr = 0;
+    }
 
-		int is_empty(){
-			return f == r;
-		}
+    ~Queue(){
+        free(data);
+    }
 
-		int is_full(){
-			return r == size;
-		}
+    bool is_empty(){
+        return frontPtr == rearPtr;
+    }
 
-		void enqueue(int value){
-			if( ! is_full() ) data[r++] = value;
-		}
+    bool is_full(){
+        return rearPtr == size;
+    }
 
-		int dequeue(){
-			if( is_empty() ) return -1;
-			else return data[f++];
-		}
+    void enqueue(DataType value){
+        if( ! is_full() )
+            data[rearPtr++] = value;
+    }
 
-		int front(){
-			if( is_empty() ) return -1;
-			else return data[f];
-		}
+    DataType dequeue(){
+        if( is_empty() )
+            return -1;
+        else
+            return data[frontPtr++];
+    }
 
-		int rear(){
-			if( is_empty() ) return -1;
-			else return data[r-1];
-		}
+    DataType front(){
+        if( is_empty() )
+            return -1;
+        else
+            return data[frontPtr];
+    }
 
-		void display(){
-			if( ! is_empty() ){
-				for(int i=f; i<r; i++) cout<<data[i] <<", ";
-			}
-		}
+    DataType rear(){
+        if( is_empty() )
+            return -1;
+        else
+            return data[rearPtr - 1];
+    }
+
+    void display(){
+        if( ! is_empty() ){
+            for(int i = frontPtr; i < rearPtr; i++)
+                cout <<data[i] <<", ";
+        }
+    }
+
 };
+
 
 int main() {
 
-	Queue Q1(5);
+    srand(time(NULL));
 
-	for(int i=1; ! Q1.is_full(); i++){
-		cout<<"\nEnqueue " <<(i*10);
-		Q1.enqueue(i*10);
-	}
+    Queue<int> Q1(5);
+    int temp;
+    cout <<"Enque random values until queue is full :";
+    while( ! Q1.is_full() ){
+        temp = random() % 100;
+        cout <<"\nEnqueue : " <<temp;
+        Q1.enqueue(temp);
+    }
 
-	cout<<"\n\nQueue : ";
-	Q1.display();
+    cout<<"\n\nQueue : ";
+    Q1.display();
 
-	cout<<"\n\nDequeue = " <<Q1.dequeue();
+    cout<<"\n\nDequeue = " <<Q1.dequeue();
 
-	cout<<"\n\nQueue : ";
-	Q1.display();
+    cout<<"\n\nQueue : ";
+    Q1.display();
 
-	cout<<"\n\nFront = " <<Q1.front() <<" Rear = " <<Q1.rear();
+    cout<<"\n\nFront = " <<Q1.front() <<" Rear = " <<Q1.rear();
 
-	cout<<endl;
+    cout<<endl;
 
-	return 0;
+    return 0;
 }

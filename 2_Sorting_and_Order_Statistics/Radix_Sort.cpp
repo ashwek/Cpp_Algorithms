@@ -1,63 +1,76 @@
 #include <iostream>
 #include <vector>
+#include <string>
+#include <stdlib.h>
+#include <cmath>
 
 using namespace std;
 
-void Print(int Arr[], int n){
-	for(int i=0; i<n; i++) cout<<Arr[i] <<", ";
+int max(int arr[], int n){
+
+    int m = arr[0];
+    for(int i = 1; i < n; i++)
+        m = (arr[i] > m) ? arr[i] : m;
+
+    return m;
+
 }
 
-int max(int Arr[], int n){
-	int m=Arr[0];
-	for(int i=1; i<n; i++)
-		m = (Arr[i]>m) ? Arr[i] : m;
-	return m;
+int get_digit(int num, int digits) {
+    return int(num / pow(10, digits - 1)) % 10;
 }
 
-int get_digit(int num, int digits=-1){
-	int count = 0, temp;
+void radix_sort(int arr[], int n){
 
-	while(num > 0){
-		count++;
-		temp = num%10;
-		num /= 10;
-		if(digits != -1) digits--;
-		if(digits == 0) break;
-	}
+    int max_digits = to_string(max(arr, n)).size();
+    int l;
+    vector<int> Bkt[10];
 
-	return (digits == -1) ? count : (digits == 0) ? temp : 0 ;
-}
+    for(int i = 1; i <= max_digits; i++) {
+        for(int j = 0; j < n; j++)
+            Bkt[get_digit(arr[j], i)].push_back(arr[j]);
 
-void radix_sort(int Arr[], int n){
-	int max_digits = get_digit(max(Arr, n));
-	int l;
-	vector<int> Bkt[10];
+    l = 0;
+    for(int k = 0; k < 10; k++) {
+        for(int j = 0; j < Bkt[k].size(); j++)
+            arr[l++] = Bkt[k][j];
+        Bkt[k].erase(Bkt[k].begin(), Bkt[k].end());
+        }
+    }
 
-	for(int i=1; i<=max_digits; i++){
-		for(int j=0; j<n; j++)
-			Bkt[get_digit(Arr[j], i)].push_back(Arr[j]);
-
-		l = 0;
-		for(int k=0; k<10; k++){
-			for(int j=0; j<Bkt[k].size(); j++)
-				Arr[l++] = Bkt[k][j];
-			Bkt[k].erase(Bkt[k].begin(), Bkt[k].end());
-		}
-	}
 }
 
 int main(){
 
-	int Arr[] = {176, 8, 78, 75, 3, 7, 129, 168, 43, 100}, n = 10;
+    // seed random
+    srand(time(NULL));
 
-	cout<<"Orignal Array = ";
-	Print(Arr, n);
+    // get random size (bettwen 1 & 10000)
+    int n = random() % 10000 + 1;
+    int arr[n];
 
-	radix_sort(Arr, n);
+    // initialize random array
+    cout <<"Size = " <<n <<"\n\nOrignal Array : ";
+    for(int i = 0; i < n; i++){
+        arr[i] = random() % 1000;
+        cout <<arr[i] <<", ";
+    }
 
-	cout<<"\n Sorted Array = ";
-	Print(Arr, n);
+    clock_t start, end;
+    start = clock();
 
-	cout<<endl;
-	return 0;
+    radix_sort(arr, n);
+
+    end = clock();
+
+    cout<<"\n\nSorted Array = ";
+    for(int i = 0; i < n; i++)
+        cout <<arr[i] <<", ";
+
+    cout <<"\n\nSorted " <<n <<" elements in "
+        <<((float)(end - start)) / CLOCKS_PER_SEC <<" seconds";
+
+    cout<<endl;
+    return 0;
+
 }

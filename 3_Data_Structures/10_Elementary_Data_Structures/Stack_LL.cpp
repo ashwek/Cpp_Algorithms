@@ -1,88 +1,117 @@
 #include <iostream>
+#include <stdlib.h>
 
 using namespace std;
 
+template<class DataType>
 class Node{
-	public:
-		int value;
-		Node *next;
+public:
+    DataType value;
+    Node<DataType> *next;
 
-		Node(int val, Node* ptr){
-			value = val;
-			next = ptr;
-		}
+    Node(DataType val, Node<DataType>* ptr) {
+        value = val;
+        next = ptr;
+    }
 
-		~Node(){
-			free(next);
-		}
+    ~Node(){
+        free(next);
+    }
+
 };
 
+template<class DataType>
 class Stack_LL{
+private:
+    Node<DataType> *top;
+    int len;
 
-	private:
-		Node *top;
-		int len;
+public:
 
-	public:
-		Stack_LL(){
-			top = NULL;
-			len = 0;
-		}
+    Stack_LL(){
+        top = NULL;
+        len = 0;
+    }
 
-		~Stack_LL(){
-			free(top);
-		}
-		
-		int is_empty(){
-			return (top == NULL);
-		}
+    ~Stack_LL(){
+        Node<DataType>* tempNode;
+        while( top != NULL ){
+            tempNode = top;
+            top = top->next;
+            tempNode->next = NULL;
+            free(tempNode);
+        }
+    }
 
-		void push(int value){
-			top = new Node(value, top);
-			len++;
-		}
+    bool is_empty(){
+        return (top == NULL);
+    }
 
-		int pop(){
-			if( is_empty() )
-				return -1;
-			Node *temp = top;
-			top = top->next;
-			len--;
-			return temp->value;
-		}
+    void push(DataType value) {
+        top = new Node<DataType>(value, top);
+        len++;
+    }
 
-		int length(){
-			return len;
-		}
+    DataType pop(){
 
-		void display(){
-			if( ! is_empty() ){
-				Node *temp = top;
-				while( temp != NULL){
-					cout<<temp->value <<", ";
-					temp = temp->next;
-				}
-			}
-		}
+        if( is_empty() )
+            return -1;
+
+        DataType tempValue = top->value;
+
+        Node<DataType> *tempNode = top;
+        top = top->next;
+        tempNode->next = NULL;
+        free(tempNode);
+        len--;
+
+        return tempValue;
+
+    }
+
+    int length(){
+        return len;
+    }
+
+    void display(){
+        if( ! is_empty() ){
+            Node<DataType> *temp = top;
+            while( temp != NULL){
+                cout<<temp->value <<", ";
+                temp = temp->next;
+            }
+        }
+    }
+
 };
+
 
 int main(){
 
-	Stack_LL S1;
+    srand(time(NULL));
 
-	for(int i=1; i<5; i++){
-		cout<<"\nPush " <<(i*10);
-		S1.push(i*10);
-	}
+    Stack_LL<int> S1;
+    int temp;
+    cout <<"Push 5 random values in stack :";
+    for(int i = 0; i < 5; i++) {
+        temp = random() % 100;
+        cout<<"\nPushing : " <<temp;
+        S1.push(temp);
+    }
 
-	cout<<"\n\nStack = ";
-	S1.display();
+    cout<<"\n\nStack = ";
+    S1.display();
 
-	cout<<"\n\nPop, popped value = " <<S1.pop();
+    cout<<"\n\nPop: popped value = " <<S1.pop();
 
-	cout<<"\n\nStack = ";
-	S1.display();
+    cout<<"\n\nStack = ";
+    S1.display();
 
-	cout<<endl;
-	return 0;
+    cout <<"\n\nPop stack until empty :";
+    while( ! S1.is_empty() ){
+        cout <<"\nPopped : " <<S1.pop();
+    }
+
+    cout<<endl;
+    return 0;
 }

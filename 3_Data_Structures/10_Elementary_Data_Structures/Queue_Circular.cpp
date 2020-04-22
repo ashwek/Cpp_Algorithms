@@ -1,83 +1,93 @@
 #include <iostream>
+#include <stdlib.h>
 
 using namespace std;
 
-class Queue_Circular{
+template<class DataType>
+class Queue_Circular {
+private:
+    DataType *data;
+    int frontPtr, rearPtr, size;
 
-	private:
-		int *data, f, r, size;
-	public:
-		Queue_Circular(int s = 10){
-			data = new int[s+1];
-			f = r = 0;
-			size = s+1;
-		}
+public:
 
-		~Queue_Circular(){
-			free(data);
-		}
+    Queue_Circular(int size = 10) {
+        data = new DataType[size + 1];
+        frontPtr = rearPtr = 0;
+        this->size = size + 1;
+    }
 
-		int is_empty(){
-			return f == r;
-		}
+    ~Queue_Circular(){
+        free(data);
+    }
 
-		int is_full(){
-			return (r+1)%size == f;
-		}
+    bool is_empty(){
+        return frontPtr == rearPtr;
+    }
 
-		int enqueue(int value){
-			if( is_full() ) return -1;
-			data[r] = value;
-			r = (r+1)%size;
-		}
+    bool is_full(){
+        return (rearPtr + 1) % size == frontPtr;
+    }
 
-		int dequeue(){
-			if( is_empty() ) return -1;
-			int temp = data[f];
-			f = (f+1)%size;
-			return temp;
-		}
+    void enqueue(DataType value){
+        data[rearPtr] = value;
+        rearPtr = (rearPtr + 1) % size;
+    }
 
-		int front(){
-			if( is_empty() ) return -1;
-			return data[f];
-		}
+    void dequeue() {
+        frontPtr = (frontPtr + 1) % size;
+    }
 
-		int rear(){
-			if( is_empty() ) return -1;
-			return data[(r+size-1)%size];
-		}
+    DataType front(){
+        if( is_empty() )
+            return -1;
+        return data[frontPtr];
+    }
 
-		void display(){
-			if( ! is_empty() ){
-				for(int i=f; i!=r; i = (i+1)%size) cout<<data[i] <<", ";
-			}
-		}
+    DataType rear() {
+        if( is_empty() )
+            return -1;
+        return data[(rearPtr + size - 1) % size];
+    }
+
+    void display(){
+        if( ! is_empty() ){
+            for(int i = frontPtr; i != rearPtr; i = (i + 1) % size)
+                cout <<data[i] <<", ";
+        }
+    }
+
 };
 
 
 int main(){
 
-	Queue_Circular Q1(5);
+    srand(time(NULL));
 
-	for(int i=1; ! Q1.is_full(); i++){
-		cout<<"\nEnqueue " <<(i*10);
-		Q1.enqueue(i*10);
-	}
+    Queue_Circular<int> Q1(5);
+    int temp;
+    cout <<"\nEnqueue random values until queue is full :";
+    while( ! Q1.is_full() ) {
+        temp = random() % 100 + 1;
+        cout<<"\nEnqueue : " <<temp;
+        Q1.enqueue(temp);
+    }
 
-	cout<<"\n\nQueue : ";
-	Q1.display();
+    cout<<"\n\nQueue : ";
+    Q1.display();
 
-	cout<<"\n\nDequeue = " <<Q1.dequeue();
+    cout<<"\n\nDequeue = " <<Q1.front();
+    Q1.dequeue();
 
-	cout<<"\nEnqueue " <<(100);
-	Q1.enqueue(100);
+    temp = random() % 100 + 1;
+    cout<<"\n\nEnqueue = " <<temp;
+    Q1.enqueue(temp);
 
-	cout<<"\n\nQueue : ";
-	Q1.display();
+    cout<<"\n\nQueue : ";
+    Q1.display();
 
-	cout<<"\n\nFront = " <<Q1.front() <<" Rear = " <<Q1.rear();
+    cout<<"\n\nFront = " <<Q1.front() <<" Rear = " <<Q1.rear();
 
-	cout<<endl;
-	return 0;
+    cout<<endl;
+    return 0;
 }

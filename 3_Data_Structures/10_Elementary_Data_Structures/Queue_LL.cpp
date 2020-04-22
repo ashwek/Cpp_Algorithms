@@ -1,94 +1,105 @@
 #include <iostream>
+#include <stdlib.h>
 
 using namespace std;
 
+template<class DataType>
 class Node{
-	public:
-		int value;
-		Node *next;
+public:
+    DataType value;
+    Node<DataType> *next;
 
-		Node(int value, Node *next){
-			this->value = value;
-			this->next = next;
-		}
+    Node(DataType value, Node<DataType> *next) {
+        this->value = value;
+        this->next = next;
+    }
 };
 
+template<class DataType>
 class Queue_LL{
-	public:
-		Node *f, *r;
+public:
+    Node<DataType> *frontNode, *rearNode;
 
-		Queue_LL(){
-			f = r = NULL;
-		}
+    Queue_LL(){
+        frontNode = rearNode = NULL;
+    }
 
-		int is_empty(){
-			return f == NULL;
-		}
+    bool is_empty() {
+        return frontNode == NULL;
+    }
 
-		int enqueue(int value){
-			if( r == NULL ) f = r = new Node(value, NULL);
-			else{
-				r->next = new Node(value, NULL);
-				r = r->next;
-			}
-			return 0;
-		}
+    void enqueue(DataType value) {
+        if( rearNode == NULL )
+            frontNode = rearNode = new Node<DataType>(value, NULL);
+        else {
+            rearNode->next = new Node<DataType>(value, NULL);
+            rearNode = rearNode->next;
+        }
+    }
 
-		int dequeue(){
-			if( is_empty() ) return -1;
-			else{
-				Node *temp = f;
+    void dequeue() {
 
-				if( f == r ) f = r = NULL;
-				else f = f->next;
+        Node<DataType> *tempNode = frontNode;
 
-				int val = temp->value;
-				free(temp);
-				return val;
-			}
-		}
+        if( frontNode == rearNode )
+            frontNode = rearNode = NULL;
+        else
+            frontNode = frontNode->next;
 
-		void display(){
-			if( ! is_empty() ){
-				Node *temp = f;
-				while( temp != NULL){
-					cout<<temp->value <<", ";
-					temp = temp->next;
-				}
-			}
-		}
+        tempNode->next = NULL;
+        free(tempNode);
 
-		int front(){
-			if( ! is_empty() ) return f->value;
-			return -1;
-		}
+    }
 
-		int rear(){
-			if( ! is_empty() ) return r->value;
-			return -1;
-		}
+    void display() {
+        if( ! is_empty() ){
+            Node<DataType> *tempNode = frontNode;
+            while( tempNode != NULL){
+                cout<<tempNode->value <<", ";
+                tempNode = tempNode->next;
+            }
+        }
+    }
+
+    DataType front(){
+        if( ! is_empty() )
+            return frontNode->value;
+        return -1;
+    }
+
+    DataType rear(){
+        if( ! is_empty() )
+            return rearNode->value;
+        return -1;
+    }
 
 };
 
 int main(){
 
-	Queue_LL Q1;
+    srand(time(NULL));
 
-	for(int i=1; i<5; i++){
-		cout<<"\nEnqueue " <<(i*15);
-		Q1.enqueue(i*15);
-	}
+    Queue_LL<int> Q1;
+    int temp;
 
-	cout<<"\n\nQueue : ";
-	Q1.display();
+    cout <<"\nEmqueue 5 random values in queue :";
+    for(int i = 0; i < 5; i++) {
+        temp = random() % 100 + 1;
+        cout<<"\nEnqueue : " <<temp;
+        Q1.enqueue(temp);
+    }
 
-	cout<<"\n\nDequeue = " <<Q1.dequeue();
+    cout<<"\n\nQueue : ";
+    Q1.display();
 
-	cout<<"\n\nQueue : ";
-	Q1.display();
+    cout<<"\n\nDequeue = " <<Q1.front();
+    Q1.dequeue();
 
-	cout<<"\n\nFront = " <<Q1.front() <<" Rear = " <<Q1.rear();
+    cout<<"\n\nQueue : ";
+    Q1.display();
 
-	cout<<endl;
-	return 0;
+    cout<<"\n\nFront = " <<Q1.front() <<" Rear = " <<Q1.rear();
+
+    cout<<endl;
+    return 0;
 }

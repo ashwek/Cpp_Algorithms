@@ -7,6 +7,8 @@ remains approximately balanced during insertions and deletions.
 https://en.wikipedia.org/wiki/Red%E2%80%93black_tree
 
 https://www.cs.usfca.edu/~galles/visualization/RedBlack.html
+
+http://www.cs.armstrong.edu/liang/animation/web/RBTree.html
 */
 
 #include <iostream>
@@ -162,6 +164,132 @@ public:
         }
     }
 
+    Node *search(int value){
+
+        Node *tempNode = root;
+        while( tempNode != nill) {
+            if( tempNode->value == value ) return tempNode;
+            tempNode = (value <= tempNode->value) ? tempNode->left : tempNode->right;
+        }
+        return NULL;
+
+    }
+
+    void transplant(Node *node, Node *replacement){
+
+        if( node == root ) root = replacement;
+        else if( node->parent->left == node ) node->parent->left = replacement;
+        else node->parent->right = replacement;
+        replacement->parent = node->parent;
+
+    }
+
+    Node *successor(Node *node) {
+
+        if( node == NULL ) node = root;
+        if( node == NULL || node == nill ) return NULL;
+        if( node->right == nill ) {
+            while( node->parent != nill and node->parent->right == node )
+                node = node->parent;
+            return node->parent;
+        }
+
+        Node *tempNode = node->right;
+        while( tempNode->left != nill )
+            tempNode = tempNode->left;
+
+        return tempNode;
+
+    }
+
+    void delete_fix_up(Node *node){
+
+        Node *sibling;
+        while( node != root && node->node_color == BLACK){
+            if( node == node->parent->left){
+                sibling = node->parent->right;
+                if( sibling->node_color == RED){
+                    sibling->node_color = BLACK;
+                    node->parent->node_color = RED;
+                    left_rotate(node->parent);
+                    sibling = node->parent->right;
+                }
+
+                if( sibling->left->node_color == BLACK && sibling->right->node_color == BLACK){
+                    sibling->node_color = RED;
+                    node = node->parent;
+                }
+                else {
+                    if( sibling->right->node_color == BLACK ){
+                        sibling->left->node_color = BLACK;
+                        sibling->node_color = RED;
+                        right_rotate(sibling);
+                        sibling = node->parent->right;
+                    }
+                    sibling->node_color = node->parent->node_color;
+                    sibling->right->node_color = node->parent->node_color = BLACK;
+                    left_rotate(node->parent);
+                    node = root;
+                }
+            }
+            else {
+                sibling = node->parent->left;
+                if( sibling->node_color == RED){
+                    sibling->node_color = BLACK;
+                    node->parent->node_color = RED;
+                    right_rotate(node->parent);
+                    sibling = node->parent->left;
+                }
+
+                if( sibling->left->node_color == BLACK && sibling->right->node_color == BLACK){
+                    sibling->node_color = RED;
+                    node = node->parent;
+                }
+                else {
+                    if( sibling->left->node_color == BLACK ){
+                        sibling->right->node_color = BLACK;
+                        sibling->node_color = RED;
+                        left_rotate(sibling);
+                        sibling = node->parent->left;
+                    }
+                    sibling->node_color = node->parent->node_color;
+                    sibling->left->node_color = node->parent->node_color = BLACK;
+                    right_rotate(node->parent);
+                    node = root;
+                }
+            }
+        }
+        node->node_color = BLACK;
+    }
+
+    void remove(Node *node){
+
+        if( node == NULL || node == nill ) return;
+
+        colors delete_node_color = node->node_color;
+        Node *replacement;
+
+        if( node->left == nill ){
+            replacement = node->right;
+            transplant(node, replacement);
+        }
+        else if( node->right == nill ){
+            replacement = node->left;
+            transplant(node, replacement);
+        }
+        else {
+            Node *replacement = successor(node);
+            node->value = replacement->value;
+            remove(replacement);
+            return;
+        }
+
+        if( delete_node_color == BLACK ){
+            delete_fix_up(replacement);
+        }
+
+    }
+
 };
 
 int main(){
@@ -170,10 +298,25 @@ int main(){
     int temp;
     RBT a;
 
+    vector<int> nodes;
+
+    cout <<"\nInserting 10 nodes :";
     for(int i = 0; i < 10; i++) {
         temp = random() % 200 + 1;
-        cout <<"\nInserting " <<temp;
+        cout <<"\n\tInserting " <<temp;
         a.insert(temp);
+        nodes.push_back(temp);
+    }
+
+    cout <<"\n\nInorder : ";
+    a.inorder();
+
+    cout <<"\n\nDeleting 5 nodes :";
+    while( nodes.size() > 5 ){
+        temp = random() % nodes.size();
+        cout << "\n\tDeleting : " <<nodes[temp];
+        a.remove(a.search(nodes[temp]));
+        nodes.erase(nodes.begin() + temp);
     }
 
     cout <<"\n\nInorder : ";

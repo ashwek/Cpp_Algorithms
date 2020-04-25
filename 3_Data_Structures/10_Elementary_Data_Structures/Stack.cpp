@@ -1,19 +1,15 @@
+#include <stdlib.h>
 #include <iostream>
 #include <vector>
-#include <stdlib.h>
-
-using namespace std;
 
 template<class DataType>
 class Stack{
-
-private:
+ private:
     DataType *data;
     int top, size;
 
-public:
-
-    Stack(int s = 10) {
+ public:
+    explicit Stack(int s = 10) {
         data = new DataType[s];
         top = -1;
         size = s;
@@ -32,57 +28,53 @@ public:
     }
 
     int push(DataType value) {
-        if( is_full() )
+        if ( is_full() )
             return 0;
         data[++top] = value;
         return 1;
     }
 
-    int pop(){
-
-        if( is_empty() )
+    int pop() {
+        if ( is_empty() )
             return -1;
         return data[top--];
-
     }
 
-    void display(){
-        if( ! is_empty() ){
-            for(int i=top; i>=0; i--)
-                cout<<data[i] <<", ";
+    void display() {
+        if ( !is_empty() ) {
+            for (int i = top; i >= 0; i--)
+                std::cout <<data[i] <<", ";
         }
     }
-
 };
 
 
-int main(){
-
+int main() {
     srand(time(NULL));
 
     Stack<int> S1 = Stack<int>(5);
     int temp;
-    cout <<"\nPushing random values until stack is full:\n";
-    while( ! S1.is_full() ) {
+
+    std::cout <<"\nPushing random values until stack is full:\n";
+    while ( !S1.is_full() ) {
         temp = random() % 100 + 1;
-        cout<<"Push : " <<temp <<endl;
+        std::cout <<"Push : " <<temp <<std::endl;
         S1.push(temp);
     }
 
-    cout<<"\nStack : ";
+    std::cout <<"\nStack : ";
     S1.display();
 
-    cout<<"\n\nPop: popped value = " <<S1.pop();
+    std::cout <<"\n\nPop: popped value = " <<S1.pop();
 
-    cout<<"\n\nStack : ";
+    std::cout <<"\n\nStack : ";
     S1.display();
 
-    cout<<"\n\nPop stack until it is empty :";
-    while( ! S1.is_empty() ){
-        cout<<"\nPopped value : " <<S1.pop();
+    std::cout <<"\n\nPop stack until it is empty :";
+    while ( !S1.is_empty() ) {
+        std::cout <<"\nPopped value : " <<S1.pop();
     }
 
-    cout<<endl;
-
+    std::cout <<std::endl;
     return 0;
 }

@@ -1,11 +1,9 @@
-#include <iostream>
 #include <stdlib.h>
-
-using namespace std;
+#include <iostream>
 
 template<class DataType>
 class Node{
-public:
+ public:
     DataType value;
     Node<DataType> *next;
 
@@ -17,25 +15,23 @@ public:
     ~Node(){
         free(next);
     }
-
 };
 
 template<class DataType>
 class Stack_LL{
-private:
+ private:
     Node<DataType> *top;
     int len;
 
-public:
-
-    Stack_LL(){
+ public:
+    Stack_LL() {
         top = NULL;
         len = 0;
     }
 
-    ~Stack_LL(){
+    ~Stack_LL() {
         Node<DataType>* tempNode;
-        while( top != NULL ){
+        while ( top != NULL ) {
             tempNode = top;
             top = top->next;
             tempNode->next = NULL;
@@ -43,7 +39,7 @@ public:
         }
     }
 
-    bool is_empty(){
+    bool is_empty() {
         return (top == NULL);
     }
 
@@ -52,9 +48,8 @@ public:
         len++;
     }
 
-    DataType pop(){
-
-        if( is_empty() )
+    DataType pop() {
+        if ( is_empty() )
             return -1;
 
         DataType tempValue = top->value;
@@ -66,52 +61,50 @@ public:
         len--;
 
         return tempValue;
-
     }
 
-    int length(){
+    int length() {
         return len;
     }
 
-    void display(){
-        if( ! is_empty() ){
+    void display() {
+        if ( !is_empty() ) {
             Node<DataType> *temp = top;
-            while( temp != NULL){
-                cout<<temp->value <<", ";
+            while ( temp != NULL ) {
+                std::cout <<temp->value <<", ";
                 temp = temp->next;
             }
         }
     }
-
 };
 
 
-int main(){
-
+int main() {
     srand(time(NULL));
 
     Stack_LL<int> S1;
     int temp;
-    cout <<"Push 5 random values in stack :";
-    for(int i = 0; i < 5; i++) {
+
+    std::cout <<"Push 5 random values in stack :";
+    for (int i = 0; i < 5; i++) {
         temp = random() % 100;
-        cout<<"\nPushing : " <<temp;
+        std::cout <<"\nPushing : " <<temp;
         S1.push(temp);
     }
 
-    cout<<"\n\nStack = ";
+    std::cout <<"\n\nStack = ";
     S1.display();
 
-    cout<<"\n\nPop: popped value = " <<S1.pop();
+    std::cout <<"\n\nPop: popped value = " <<S1.pop();
 
-    cout<<"\n\nStack = ";
+    std::cout <<"\n\nStack = ";
     S1.display();
 
-    cout <<"\n\nPop stack until empty :";
-    while( ! S1.is_empty() ){
-        cout <<"\nPopped : " <<S1.pop();
+    std::cout <<"\n\nPop stack until empty :";
+    while ( !S1.is_empty() ) {
+        std::cout <<"\nPopped : " <<S1.pop();
     }
 
-    cout<<endl;
+    std::cout <<std::endl;
     return 0;
 }

@@ -1,20 +1,17 @@
-#include <iostream>
 #include <stdlib.h>
-
-using namespace std;
+#include <iostream>
 
 template<class T>
-void quick_sort(T arr[], int s, int e){
-
-    if( e - s <= 1)
+void quick_sort(T arr[], int s, int e) {
+    if ( e - s <= 1 )
         return;
 
     int key = e - 1;
     int pivot = s - 1;
     T temp;
 
-    for(int i = s; i < (e - 1); i++) {
-        if(arr[i] < arr[key]) {
+    for (int i = s; i < (e - 1); i++) {
+        if (arr[i] < arr[key]) {
             pivot++;
             temp = arr[pivot];
             arr[pivot] = arr[i];
@@ -29,23 +26,21 @@ void quick_sort(T arr[], int s, int e){
 
     quick_sort(arr, s, pivot);
     quick_sort(arr, pivot + 1, e);
-
 }
 
-int main(){
-
+int main() {
     // seed random
     srand(time(NULL));
 
     // get random size (bettwen 1 & 10000)
     int n = random() % 10000 + 1;
-    float arr[n];
+    float *arr = new float[n];
 
     // initialize random array
-    cout <<"Size = " <<n <<"\n\nOrignal Array : ";
-    for(int i = 0; i < n; i++){
+    std::cout <<"Size = " <<n <<"\n\nOrignal Array : ";
+    for (int i = 0; i < n; i++) {
         arr[i] = (random() % 1000) / (random() % 1000 + 1.0);
-        cout <<arr[i] <<", ";
+        std::cout <<arr[i] <<", ";
     }
 
     clock_t start, end;
@@ -55,14 +50,13 @@ int main(){
 
     end = clock();
 
-    cout<<"\n\nSorted Array = ";
-    for(int i = 0; i < n; i++)
-        cout <<arr[i] <<", ";
+    std::cout <<"\n\nSorted Array = ";
+    for (int i = 0; i < n; i++)
+        std::cout <<arr[i] <<", ";
 
-    cout <<"\n\nSorted " <<n <<" elements in "
-        <<((float)(end - start)) / CLOCKS_PER_SEC <<" seconds";
+    std::cout <<"\n\nSorted " <<n <<" elements in "
+        <<(static_cast<float>(end - start)) / CLOCKS_PER_SEC <<" seconds";
 
-    cout<<endl;
+    std::cout <<std::endl;
     return 0;
-
 }

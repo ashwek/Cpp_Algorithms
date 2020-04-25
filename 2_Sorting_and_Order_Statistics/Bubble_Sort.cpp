@@ -1,19 +1,15 @@
-#include <iostream>
 #include <stdlib.h>
-
-using namespace std;
+#include <iostream>
 
 template<class T>
-void bubble_sort(T arr[], int n){
-
+void bubble_sort(T arr[], int n) {
     T temp;
     bool swapped;
 
-    for(int i = 0; i < n; i++) {
-
+    for (int i = 0; i < n; i++) {
         swapped = false;
-        for(int j = 0; j < (n - i - 1); j++) {
-            if( arr[j] > arr[j + 1] ) {
+        for (int j = 0; j < (n - i - 1); j++) {
+            if ( arr[j] > arr[j + 1] ) {
                 temp = arr[j];
                 arr[j] = arr[j + 1];
                 arr[j+1] = temp;
@@ -22,27 +18,25 @@ void bubble_sort(T arr[], int n){
             }
         }
 
-        if( ! swapped)
+        if ( !swapped )
             break;
-
     }
-
 }
 
-int main(){
 
+int main() {
     // seed random
     srand(time(NULL));
 
     // get random size (bettwen 1 & 10000)
     int n = random() % 10000 + 1;
-    int arr[n];
+    int *arr = new int[n];
 
     // initialize random array
-    cout <<"Size = " <<n <<"\n\nOrignal Array : ";
-    for(int i = 0; i < n; i++){
+    std::cout <<"Size = " <<n <<"\n\nOrignal Array : ";
+    for (int i = 0; i < n; i++) {
         arr[i] = random() % 1000;
-        cout <<arr[i] <<", ";
+        std::cout <<arr[i] <<", ";
     }
 
     clock_t start, end;
@@ -52,14 +46,13 @@ int main(){
 
     end = clock();
 
-    cout<<"\n\nSorted Array = ";
-    for(int i = 0; i < n; i++)
-        cout <<arr[i] <<", ";
+    std::cout <<"\n\nSorted Array = ";
+    for (int i = 0; i < n; i++)
+        std::cout <<arr[i] <<", ";
 
-    cout <<"\n\nSorted " <<n <<" elements in "
-        <<((float)(end - start)) / CLOCKS_PER_SEC <<" seconds";
+    std::cout <<"\n\nSorted " <<n <<" elements in "
+        <<(static_cast<float>(end - start)) / CLOCKS_PER_SEC <<" seconds";
 
-    cout<<endl;
+    std::cout <<std::endl;
     return 0;
-
 }

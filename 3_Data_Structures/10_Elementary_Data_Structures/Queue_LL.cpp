@@ -1,11 +1,9 @@
-#include <iostream>
 #include <stdlib.h>
-
-using namespace std;
+#include <iostream>
 
 template<class DataType>
 class Node{
-public:
+ public:
     DataType value;
     Node<DataType> *next;
 
@@ -17,10 +15,10 @@ public:
 
 template<class DataType>
 class Queue_LL{
-public:
+ public:
     Node<DataType> *frontNode, *rearNode;
 
-    Queue_LL(){
+    Queue_LL() {
         frontNode = rearNode = NULL;
     }
 
@@ -29,77 +27,74 @@ public:
     }
 
     void enqueue(DataType value) {
-        if( rearNode == NULL )
+        if ( rearNode == NULL ) {
             frontNode = rearNode = new Node<DataType>(value, NULL);
-        else {
+        } else {
             rearNode->next = new Node<DataType>(value, NULL);
             rearNode = rearNode->next;
         }
     }
 
     void dequeue() {
-
         Node<DataType> *tempNode = frontNode;
 
-        if( frontNode == rearNode )
+        if ( frontNode == rearNode )
             frontNode = rearNode = NULL;
         else
             frontNode = frontNode->next;
 
         tempNode->next = NULL;
         free(tempNode);
-
     }
 
     void display() {
-        if( ! is_empty() ){
+        if ( !is_empty() ) {
             Node<DataType> *tempNode = frontNode;
-            while( tempNode != NULL){
-                cout<<tempNode->value <<", ";
+            while ( tempNode != NULL ) {
+                std::cout <<tempNode->value <<", ";
                 tempNode = tempNode->next;
             }
         }
     }
 
-    DataType front(){
-        if( ! is_empty() )
+    DataType front() {
+        if ( !is_empty() )
             return frontNode->value;
         return -1;
     }
 
     DataType rear(){
-        if( ! is_empty() )
+        if ( !is_empty() )
             return rearNode->value;
         return -1;
     }
-
 };
 
-int main(){
 
+int main() {
     srand(time(NULL));
 
     Queue_LL<int> Q1;
     int temp;
 
-    cout <<"\nEmqueue 5 random values in queue :";
-    for(int i = 0; i < 5; i++) {
+    std::cout <<"\nEmqueue 5 random values in queue :";
+    for (int i = 0; i < 5; i++) {
         temp = random() % 100 + 1;
-        cout<<"\nEnqueue : " <<temp;
+        std::cout <<"\nEnqueue : " <<temp;
         Q1.enqueue(temp);
     }
 
-    cout<<"\n\nQueue : ";
+    std::cout <<"\n\nQueue : ";
     Q1.display();
 
-    cout<<"\n\nDequeue = " <<Q1.front();
+    std::cout <<"\n\nDequeue = " <<Q1.front();
     Q1.dequeue();
 
-    cout<<"\n\nQueue : ";
+    std::cout <<"\n\nQueue : ";
     Q1.display();
 
-    cout<<"\n\nFront = " <<Q1.front() <<" Rear = " <<Q1.rear();
+    std::cout <<"\n\nFront = " <<Q1.front() <<" Rear = " <<Q1.rear();
 
-    cout<<endl;
+    std::cout <<std::endl;
     return 0;
 }

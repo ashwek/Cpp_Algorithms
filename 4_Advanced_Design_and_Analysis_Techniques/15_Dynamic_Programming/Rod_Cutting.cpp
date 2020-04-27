@@ -1,38 +1,41 @@
-#include<iostream>
+#include <iostream>
 
-using namespace std;
+int rod_cut(int price[], int len, int bestPrice[], int firstCut[]) {
+    if ( bestPrice[len] != -1 )
+        return bestPrice[len];
 
-int Rod_Cut(int Cost[], int Len, int Prev[], int Ratio[]){
+    int maxPrice = -1, temp, cut;
 
-	if(Prev[Len] != -1) return Prev[Len];
-	
-	int Max = -1, temp, Max_I;
-	for(int i=1; i<=Len; i++){
-		Prev[Len-i] = Rod_Cut(Cost, Len-i, Prev, Ratio);
-		temp = Cost[i-1] + Prev[Len-i];
-		if(temp > Max){
-			Max = temp;
-			Max_I = i;
-		}
-	}
-	Ratio[Len] = Max_I;
-	return Max;
+    for (int i = 1; i <= len; i++) {
+        bestPrice[len - i] = rod_cut(price, len - i, bestPrice, firstCut);
+        temp = price[i - 1] + bestPrice[len - i];
+        if ( temp > maxPrice ) {
+            maxPrice = temp;
+            cut = i;
+        }
+    }
+
+    firstCut[len] = cut;
+
+    return maxPrice;
 }
 
-void Print(int Price[], int Ratio[]){
-	int n = 10;
-	for(int i=0; i<n; i++)
-		cout<<(i+1)<<" => " <<Price[i+1] <<", " <<Ratio[i+1] <<endl;
+void print(int bestPrice[], int firstCut[]) {
+    int n = 10;
+    for (int i = 0; i < n; i++)
+        std::cout <<(i + 1) <<" => " <<bestPrice[i + 1]
+                    <<", " <<firstCut[i + 1] <<std::endl;
 }
 
-int main(){
+int main() {
+    int price[] = {1, 5, 8, 9, 10, 17, 17, 20, 24, 30};
+    int bestPrice[] = {0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+    int firstCut[] = {0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 
-	int Cost[] = {1,5,8,9,10,17,17,20,24,30};
-	int Prev[] = {0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
-	int Ratio[] = {0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
-	
-	Prev[10] = Rod_Cut(Cost, 10, Prev, Ratio); 
-	Print(Prev, Ratio);
-	cout<<endl;
-	return 0;
+    bestPrice[10] = rod_cut(price, 10, bestPrice, firstCut);
+
+    print(bestPrice, firstCut);
+
+    std::cout <<std::endl;
+    return 0;
 }

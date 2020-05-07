@@ -2,11 +2,12 @@
 #include <cstring>
 #include <vector>
 
-int knapsack(int n, int W, int *weights, int *values) {
+void knapsack(int n, int W, int *weights, int *values) {
     std::vector<std::vector<int>> count(n + 1, std::vector<int>(W + 1, 0));
 
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= W; j++) {
+    int i, j;
+    for (i = 1; i <= n; i++) {
+        for (j = 1; j <= W; j++) {
             if ( weights[i - 1] > j ) {
                 count[i][j] = count[i - 1][j];
             } else {
@@ -16,7 +17,24 @@ int knapsack(int n, int W, int *weights, int *values) {
         }
     }
 
-    return count[n][W];
+    std::cout <<"Max Value : " <<count[n][W];
+
+    std::vector<bool> selected(n, false);
+    i = n, j = W;
+    while ( i > 0 && j > 0 ) {
+        if ( count[i][j] == count[i - 1][j] ) {
+            i--;
+        } else {
+            selected[i - 1] = true;
+            j = j - weights[i - 1];
+        }
+    }
+
+    std::cout <<"\nSelected Weight(Value) : ";
+    for (i = 0; i < n; i++) {
+        if ( selected[i] )
+            std::cout <<weights[i] <<"(" <<values[i] <<"), ";
+    }
 }
 
 int main() {
@@ -24,7 +42,7 @@ int main() {
     int weights[] = {10, 20, 30};
     int values[] = {60, 100, 120};
 
-    std::cout <<knapsack(n, W, weights, values);
+    knapsack(n, W, weights, values);
 
     std::cout <<std::endl;
     return 0;

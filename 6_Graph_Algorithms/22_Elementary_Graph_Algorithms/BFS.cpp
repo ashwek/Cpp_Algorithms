@@ -1,101 +1,143 @@
 #include <iostream>
 #include <vector>
+#include <map>
+#include <queue>
 
-using namespace std;
+enum colors {WHITE, GRAY, BLACK};
 
-class graph{
-public:
-    int v;
-    vector<vector<int>> adj;
-    vector<int> distance;
-    vector<int> parent;
-    vector<int> state;
-    graph(int nodes);
-    void add_edge(int src, int dst);
-    void print_adj();
-    void bfs(int src);
+class Vertex {
+ public:
+    int value;
+    colors vertexColor;
+    Vertex *parent;
+    int distance;
+
+    explicit Vertex(int value) {
+        this->value = value;
+    }
+
+    Vertex(int value, colors vertexColor, Vertex *parent, int distance) {
+        this->value = value;
+        this->vertexColor = vertexColor;
+        this->parent = parent;
+        this->distance = distance;
+    }
 };
 
-graph::graph(int nodes = 0){
-    v = nodes;
-    adj.resize(nodes);
-    distance.resize(nodes);
-    parent.resize(nodes);
-    state.resize(nodes);
+class Graph {
+ public:
+    std::map<Vertex*, std::vector<Vertex*>> edges;
+    Graph();
+    void add_edge(Vertex *src, Vertex *dst);
+    void print_adj();
+    void bfs(Vertex *src);
+    void print_path(Vertex *src, Vertex *dst);
+};
+
+Graph::Graph() {
 }
 
-void graph::add_edge(int src, int dst){
-    adj[src].push_back(dst);
+void Graph::add_edge(Vertex *src, Vertex *dst) {
+    if ( edges.count(src) == 0 )
+        edges[src] = std::vector<Vertex*>();
+    edges[src].push_back(dst);
 }
 
-void graph::print_adj(){
-    for( int i = 0; i < v; i++){
-        cout<<i <<" -> ";
-        for( int j = 0; j < adj[i].size(); j++)
-            cout<<adj[i][j] <<", ";
-        cout<<endl;
+void Graph::print_adj() {
+    for (auto it : edges) {
+        std::cout <<it.first->value <<" -> ";
+        for (Vertex* adj : it.second)
+            std::cout <<adj->value <<", ";
+        std::cout << std::endl;
     }
 }
 
-void graph::bfs(int src){
+void Graph::bfs(Vertex *src) {
+    std::queue<Vertex*> queue;
 
-    vector<int> queue;
-    int front = 0;
-
-    for( int i = 0; i < v; i++){
-        distance[i] = parent[i] = -1;
-        state[i] = 0;
+    for (auto it : edges) {
+        it.first->vertexColor = WHITE;
+        it.first->parent = NULL;
+        it.first->distance = -1;
     }
 
-    state[src] = 1;
-    distance[src] = 0;
-    queue.push_back(src);
+    src->vertexColor = WHITE;
+    src->parent = NULL;
+    src->distance = 0;
 
-    while( front < queue.size() ){
-        int temp = queue[front++];
-        cout<<temp <<" -> ";
-        for( int i = 0; i < adj[temp].size(); i++){
-            if( state[adj[temp][i]] == 0 ){
-                state[adj[temp][i]] = 1;
-                queue.push_back(adj[temp][i]);
-                distance[adj[temp][i]] = distance[temp]+1;
-                parent[adj[temp][i]] = temp;
+    queue.push(src);
+
+    Vertex* temp;
+    while ( queue.size() != 0 ) {
+        temp = queue.front();
+        queue.pop();
+
+        std::cout <<temp->value <<" -> ";
+        for (Vertex* adj : edges[temp]) {
+            if ( adj->vertexColor == WHITE ) {
+                adj->vertexColor = GRAY;
+                queue.push(adj);
+                adj->distance = temp->distance + 1;
+                adj->parent = temp;
             }
         }
-    }
 
+        temp->vertexColor = BLACK;
+    }
 }
 
-int main(){
+void Graph::print_path(Vertex *src, Vertex *dst) {
+    if ( src == dst ) {
+        std::cout <<src->value;
+        return;
+    } else if ( dst->parent == NULL ) {
+        std::cout <<"No path from src to dst";
+    } else {
+        print_path(src, dst->parent);
+        std::cout <<" -> " <<dst->value;
+    }
+}
 
-    graph g(8);
 
-    g.add_edge(0, 1);
-    g.add_edge(0, 2);
-    g.add_edge(1, 0);
-    g.add_edge(2, 0);
-    g.add_edge(2, 3);
-    g.add_edge(3, 2);
-    g.add_edge(3, 4);
-    g.add_edge(3, 5);
-    g.add_edge(4, 3);
-    g.add_edge(4, 5);
-    g.add_edge(4, 6);
-    g.add_edge(5, 3);
-    g.add_edge(5, 4);
-    g.add_edge(5, 6);
-    g.add_edge(5, 7);
-    g.add_edge(6, 4);
-    g.add_edge(6, 5);
-    g.add_edge(6, 7);
-    g.add_edge(7, 5);
-    g.add_edge(7, 6);
+int main() {
+    Graph g;
 
+    std::vector<Vertex*> vertices(8);
+    for (int i = 0; i < 8; i++) {
+        vertices[i] = new Vertex(i);
+    }
+
+    g.add_edge(vertices[0], vertices[1]);
+    g.add_edge(vertices[0], vertices[2]);
+    g.add_edge(vertices[1], vertices[0]);
+    g.add_edge(vertices[2], vertices[0]);
+    g.add_edge(vertices[2], vertices[3]);
+    g.add_edge(vertices[3], vertices[2]);
+    g.add_edge(vertices[3], vertices[4]);
+    g.add_edge(vertices[3], vertices[5]);
+    g.add_edge(vertices[4], vertices[3]);
+    g.add_edge(vertices[4], vertices[5]);
+    g.add_edge(vertices[4], vertices[6]);
+    g.add_edge(vertices[5], vertices[3]);
+    g.add_edge(vertices[5], vertices[4]);
+    g.add_edge(vertices[5], vertices[6]);
+    g.add_edge(vertices[5], vertices[7]);
+    g.add_edge(vertices[6], vertices[4]);
+    g.add_edge(vertices[6], vertices[5]);
+    g.add_edge(vertices[6], vertices[7]);
+    g.add_edge(vertices[7], vertices[5]);
+    g.add_edge(vertices[7], vertices[6]);
+
+    std::cout <<"\nAdjacency list :\n";
     g.print_adj();
 
-    cout<<"\nBFS traversal : ";
-    g.bfs(1);
+    std::cout <<"\nBFS traversal : ";
+    g.bfs(vertices[1]);
 
-    cout<<endl;
+    std::cout <<"\n\nPath from 2 to 7:\n"
+        <<"(Shortest path in terms of \"Number of edges\"):\n";
+    g.print_path(vertices[2], vertices[7]);
+
+    std::cout <<std::endl;
     return 0;
 }

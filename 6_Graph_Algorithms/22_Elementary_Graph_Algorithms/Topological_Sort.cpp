@@ -1,93 +1,138 @@
 #include <iostream>
 #include <vector>
+#include <map>
+#include <string>
+#include <algorithm>
 
-using namespace std;
+enum colors {WHITE, GRAY, BLACK};
 
-class graph{
-public:
-    int v, count;
-    vector<vector<int>> edges;
-    vector<int> timestamp[2], state;
-    graph(int);
-    void add_edge(int, int);
-    void print_edges();
-    void dfs(vector<int>&);
-    void dfs_visit(int, vector<int>&);
-    void topological_sort();
+class Vertex {
+ public:
+    std::string garment;
+    Vertex *parent;
+    int discoverTimestamp;
+    int finishTimestamp;
+    colors vertexColor;
+
+    explicit Vertex(std::string garment) {
+        this->garment = garment;
+    }
 };
 
-graph::graph(int ver){
-    v = ver;
-    edges.resize(ver);
-    state.resize(ver);
-    timestamp[0].resize(ver);
-    timestamp[1].resize(ver);
+class Graph {
+ public:
+    int time;
+    std::map<Vertex*, std::vector<Vertex*>> edges;
+
+    Graph();
+    void add_edge(Vertex *src, Vertex *dst);
+    void print_adj();
+    void dfs();
+    void dfs_visit(Vertex *src);
+    void topological_sort();
+    bool comp(Vertex *a, Vertex *b);
+};
+
+Graph::Graph() {
 }
 
-void graph::add_edge(int src, int dst){
-    edges[src].push_back(dst);
+void Graph::add_edge(Vertex *src, Vertex *dst) {
+    if ( edges.count(src) == 0 )
+        edges[src] = std::vector<Vertex*>();
+    if ( dst != NULL )
+        edges[src].push_back(dst);
 }
 
-void graph::print_edges(){
-    for(int i=0; i<v; i++){
-        cout <<(i+1) <<" -> ";
-        for(int j=0; j<edges[i].size(); j++)
-            cout <<(edges[i][j]+1) <<", ";
-        cout<<endl;
+void Graph::print_adj() {
+    for (auto it : edges) {
+        std::cout <<it.first->garment <<" -> ";
+        for (Vertex *temp : it.second)
+            std::cout <<temp->garment <<", ";
+        std::cout <<std::endl;
     }
 }
 
-void graph::dfs(vector<int> &srt){
+void Graph::dfs() {
+    time = 0;
+    for (auto it : edges) {
+        it.first->parent = NULL;
+        it.first->vertexColor = WHITE;
+        it.first->discoverTimestamp = it.first->finishTimestamp = -1;
+    }
 
-    for(int i = 0; i < v; i++) state[i] = 0;
-
-    for(int i = 0; i < v; i++){
-        if( state[i] == 0 ){
-            state[i] = 1;
-            dfs_visit(i, srt);
-            srt.push_back(i);
+    for (auto it : edges) {
+        if ( it.first->vertexColor == WHITE ) {
+            dfs_visit(it.first);
         }
     }
 }
 
-void graph::dfs_visit(int src, vector<int> &srt){
+void Graph::dfs_visit(Vertex *src) {
+    time++;
+    src->discoverTimestamp = time;
+    src->vertexColor = GRAY;
 
-    for(int i = 0; i < edges[src].size(); i++){
-        if( state[edges[src][i]] == 0 ){
-            state[edges[src][i]] = 1;
-            dfs_visit(edges[src][i], srt);
-            srt.push_back(edges[src][i]);
+    for (Vertex *temp : edges[src]) {
+        if (temp->vertexColor == WHITE) {
+            dfs_visit(temp);
         }
     }
+
+    time++;
+    src->finishTimestamp = time;
+    src->vertexColor = BLACK;
 }
 
-void graph::topological_sort(){
-    vector<int> srt;
-    dfs(srt);
-    cout<<"\nTopological sort : ";
-    for(int i = srt.size()-1; i >= 0; i--)
-        cout <<srt[i] <<", ";
-    cout<<endl;
+bool comp(Vertex *a, Vertex *b) {
+    return a->finishTimestamp > b->finishTimestamp;
 }
 
-int main(){
+void Graph::topological_sort() {
+    dfs();
 
-    graph g(8);
+    std::vector<Vertex*> vertices;
+    for (auto it : edges) {
+        vertices.push_back(it.first);
+    }
 
-    g.add_edge(0, 2);
-    g.add_edge(0, 3);
-    g.add_edge(0, 4);
-    g.add_edge(1, 2);
-    g.add_edge(1, 7);
-    g.add_edge(2, 5);
-    g.add_edge(3, 5);
-    g.add_edge(3, 7);
-    g.add_edge(4, 7);
-    g.add_edge(5, 6);
-    g.add_edge(6, 7);
+    std::sort(vertices.begin(), vertices.end(), ::comp);
+    std::cout <<"\nTopological sort :\n";
+    for (Vertex *temp : vertices) {
+        std::cout <<temp->garment <<" -> ";
+    }
+    std::cout <<std::endl;
+}
+
+int main() {
+    Graph g;
+    std::vector<Vertex*> vertices(9);
+    vertices[0] = new Vertex("Undershorts");
+    vertices[1] = new Vertex("Pants");
+    vertices[2] = new Vertex("Belt");
+    vertices[3] = new Vertex("Shirt");
+    vertices[4] = new Vertex("Tie");
+    vertices[5] = new Vertex("Jacket");
+    vertices[6] = new Vertex("Socks");
+    vertices[7] = new Vertex("Shoes");
+    vertices[8] = new Vertex("Watch");
+
+    g.add_edge(vertices[0], vertices[1]);
+    g.add_edge(vertices[0], vertices[7]);
+    g.add_edge(vertices[1], vertices[2]);
+    g.add_edge(vertices[1], vertices[7]);
+    g.add_edge(vertices[2], vertices[5]);
+    g.add_edge(vertices[3], vertices[2]);
+    g.add_edge(vertices[3], vertices[4]);
+    g.add_edge(vertices[4], vertices[5]);
+    g.add_edge(vertices[6], vertices[7]);
+    g.add_edge(vertices[7], NULL);
+    g.add_edge(vertices[8], NULL);
+
+    std::cout <<"\nAdjacency List :\n";
+    g.print_adj();
 
     g.topological_sort();
 
-    cout<<endl;
+    std::cout <<std::endl;
     return 0;
 }

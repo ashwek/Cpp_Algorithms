@@ -176,6 +176,12 @@ Practicing algorithms from [Introduction to Algorithms](https://en.wikipedia.org
                     <li>
                         <a href="./6_Graph_Algorithms/24_Single_Source_Shortest_Paths/Bellman_Ford.cpp">Bellman Ford</a>
                     </li>
+                    <li>
+                        <a href="./6_Graph_Algorithms/24_Single_Source_Shortest_Paths/DAG_Shortest_Path.cpp">DAG Shortest Path</a>
+                    </li>
+                    <li>
+                        <a href="./6_Graph_Algorithms/24_Single_Source_Shortest_Paths/Djkstra.cpp">Djkstra</a>
+                    </li>
                 </ul>
             </li>
         </ol>
